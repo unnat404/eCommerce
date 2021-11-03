@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=tq9prv^#a&g3ppwc%02ko*$0+cs+6nvj8tbhye--y13#yxx8='
+# ===========================================================================================================
+# METHOD-1(implementation-1) : for security of SECRET_KEY :: AS ENVIRONMENT VARIABLE
+# SECRET_KEY = os.environ['SECRET_KEY']
+# ===========================================================================================================
+# METHOD-1(implementation-2)(this is the way, i will use, if sucessful) : for security of SECRET_KEY :: AS ENVIRONMENT VARIABLE
+SECRET_KEY = config("SECRET_KEY")
+
+# ===========================================================================================================
+# METHOD-2 : for security of SECRET_KEY :: FROM A FILE WHICH WILL BE GITIGNORED
+# with open('<path to txt file containing secret key>') as f:
+#     SECRET_KEY=f.read().strip()
+# ===========================================================================================================
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
