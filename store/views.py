@@ -42,8 +42,7 @@ def cart(request):
         order,created = Order.objects.get_or_create(customer=customer,complete=False)        
         items=order.orderitem_set.all()
         #we are able to query child objects by : <parent_in_small_case>.<child_in_small_case>_set.all()
-        cartItems=order.get_cart_items
-        
+        cartItems=order.get_cart_items        
     else:
         # try...except to prevent error if cart cookie is not created/set 
         # we initialize an empty dictionary if cart not created 
@@ -58,7 +57,35 @@ def cart(request):
         cartItems=order['get_cart_items']
 
         for i in cart:
-            cartItems += cart[i]['quantity'] 
+            try:    
+                cartItems += cart[i]["quantity"] 
+
+                product = Product.objects.get(id=i)
+                total = (product.price * cart[i]['quantity'])
+
+                order['get_cart_items'] = cart[i]['quantity']  
+                order['get_cart_total'] += total
+
+                item = {
+                    'product':{
+                        'id':product.id,
+                        'name':product.name,
+                        'price':product.price,
+                        'imageURL':product.imageURL,
+                        # 'digital':product.digital,
+                    },
+                    'quantity' : cart[i]["quantity"],
+                    'get_total' : total
+                } 
+                items.append(item)
+
+                if product.digital == False:
+                    order['shipping'] = True
+            except:
+                # case 1: if product itself is removed by site from the store
+                # case 2: if guest user removes an item from order then this except block save from NoneType Error
+                pass
+
 
     context={'items':items,'order':order,'cartItems':cartItems}
     return render(request,'store/cart.html',context)

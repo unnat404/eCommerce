@@ -34,9 +34,19 @@ function addCookieItem(productId, action){
 
         if(cart[productId]['quantity'] <= 0 ){
             console.log('Item should be deleted || Remove Item')
-            delete cart[productId]; //delete is a javascript operator            
+            
+            //----------------------------------------------------------------------------------------------------
+            // delete cart[productId]; 
+            //delete is a javascript operator            
             /* The JavaScript delete operator removes a property from an object;
              if no more references to the same property are held, it is eventually released automatically. */
+            /* delete operator leaves undefine value for the deleted property 
+            (which will give and error if we remove an item from cart for guest user by clicking the down arrow) */
+            //----------------------------------------------------------------------------------------------------
+
+            const {productId, ...cartWithoutDeletedPdt} = cart;
+            cart = cartWithoutDeletedPdt;
+            console.log(cartWithoutDeletedPdt )
         }
     }
 
