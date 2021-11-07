@@ -45,14 +45,26 @@ def cart(request):
         cartItems=order.get_cart_items
         
     else:
+        # try...except to prevent error if cart cookie is not created/set 
+        # we initialize an empty dictionary if cart not created 
+        try:
+            cart = json.loads(request.COOKIES['cart'])
+        except: 
+            cart = {} 
+            
+        print('Cart:',cart)
         items=[]
         order={"get_cart_total":0,"get_cart_items":0, 'shipping' : False}
-        cartItems=order['get_cart_items'] 
+        cartItems=order['get_cart_items']
+
+        for i in cart:
+            cartItems += cart[i]['quantity'] 
 
     context={'items':items,'order':order,'cartItems':cartItems}
     return render(request,'store/cart.html',context)
  
 def checkout(request):
+    
     if request.user.is_authenticated:
         customer = request.user.customer  #from tutorial (yes work)
         # NOTE: above code line was in the tutorial and has an alternative objects.filter(...).first() 
