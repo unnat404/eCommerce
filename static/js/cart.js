@@ -9,12 +9,39 @@ for(i=0; i<updateBtns.length; i++){
 
         console.log("User:",user)
         if(user == "AnonymousUser"){
-            console.log("User not authenticated")
+            // console.log("User not authenticated")
+            addCookieItem(productID, action)
         }
         else{
              updateUserOrder(productID,action)
         }
     })
+}
+
+function addCookieItem(productId, action){
+    console.log('Not logged in....')
+
+    if(action=='add'){
+        if(cart[productId] == undefined){
+            cart[productId] ={'quantity': 1}
+        }
+        else{
+            cart[productId]['quantity'] += 1
+        }
+    }
+    if(action == 'remove'){
+        cart[productId] -= 1
+
+        if(cart[productId]['quantity'] <= 0 ){
+            console.log('Item should be deleted || Remove Item')
+            delete cart[productId]; //delete is a javascript operator            
+            /* The JavaScript delete operator removes a property from an object;
+             if no more references to the same property are held, it is eventually released automatically. */
+        }
+    }
+
+    console.log('Cart: ', cart)
+    document.cookie =  'cart=' + JSON.stringify(cart) + ";domain=;path=/"
 }
 
 function updateUserOrder(productID,action){

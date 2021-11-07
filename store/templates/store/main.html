@@ -39,7 +39,37 @@
             }
             const csrftoken = getToken('csrftoken'); // in django doc
             // var csrftoken = getToken('csrftoken'); // in project
-        </script>
+
+            /* getCookie(name) returns the cookie for the given name 
+            and if does not exist it return null */
+            function getCookie(name){
+                // split all cookie string and get all indivisual name=value pair into an array
+                var cookieArr = document.cookie.split(";");
+
+                //loop through above cookieArr array elements
+                for(var i=0; i < cookieArr.length; i++){
+                    var cookiePair = cookieArr[i].split("=");
+
+                    /* removing white space at begining of cookie name 
+                    and comapre it with given string(name) */
+                    if(name == cookiePair[0].trim()){
+                        //decode the cookie valu and return
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                //return null if cookie with that name not found
+                return null;
+            }
+
+            var cart = JSON.parse(getCookie('cart'))
+            if(cart == undefined){
+                cart = {}
+                console.log('Cart was created!')
+                document.cookie = 'cart=' + JSON.stringify(cart) + ";domin=;path=/"
+            }
+
+            console.log('Cart:' , cart)       
+       </script>
      </head>
      <body>
          <!-- <h3>Navbar placeholder</h3> -->
