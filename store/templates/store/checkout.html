@@ -110,7 +110,7 @@
 				'total' : total,
 			}
 
-			var sshippingInfo = {
+			var shippingInfo = {
 				'address' : null,
 				'city' : null,
 				'state' : null,
@@ -118,15 +118,16 @@
 			}
 
 			if(shipping != 'False'){
-				sshippingInfo.address=form.address.value
-				sshippingInfo.city=form.city.value
-				sshippingInfo.state=form.state.value
-				sshippingInfo.zipcode=form.zipcode.value
+				shippingInfo.address=form.address.value
+				shippingInfo.city=form.city.value
+				shippingInfo.state=form.state.value
+				shippingInfo.zipcode=form.zipcode.value
 			}
 
 			if(user == 'AnonymousUser'){
 				userFormData.name = form.name.value
-				userFormData.email = form.name.email
+				// userFormData.email = form.name.email //wrong
+				userFormData.email = form.email.value //right
 			}
 
 			var url= '/process_order/'
@@ -136,19 +137,26 @@
 					'Content-Type':'application/json',
 					'X-CSRFToken':csrftoken,
 				},
-				body:JSON.stringify({'form':userFormData, 'shipping':sshippingInfo}),
+				body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
 			})
 			.then((response) => response.json())
 			.then((data) => {
 				console.log('Success:',data);
 				alert('Transaction completed!!');
+
+				// after payment is sucessful for unauthenticated user, set cart to empty dictionary
+				// and update the cookie(to {}) before sending the user back to main page(or the cart won't clear)
+				// we put this in the fetch calls "promise" so we clear it only when the data is submitted properly 
+				cart = {}
+				document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
 				window.location.href="{% url 'store' %}" 
 				// to relocate to store page
 			})
 
 			//below console.log will get commented 
 			//and is just for checking if the shippingInfo and userFormData are received properly 
-			console.log('Shipping Info: ',sshippingInfo)
+			console.log('Shipping Info: ',shippingInfo)
 			console.log('User Info: ',userFormData)
 		}
 		

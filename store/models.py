@@ -18,7 +18,7 @@ class Customer(models.Model):
 class Product(models.Model):
     name=models.CharField(max_length=200)
     price=models.DecimalField(max_digits=7,decimal_places=2) 
-    #max price of an item can have 7 decimal places => max_price<=1000000.00
+    # max price of an item can have 7 decimal places => max_price<=1000000.00
     digital=models.BooleanField(default=False,null=True,blank=True)
     image=models.ImageField(null=True,blank=True)
 
@@ -86,7 +86,7 @@ class ShippingAddress(models.Model):
     order=models.ForeignKey(Order,on_delete=models.SET_NULL,blank=True,null=True)
     address=models.CharField(max_length=200,null=True)
     city=models.CharField(max_length=200,null=True)
-    zip_code=models.CharField(max_length=200,null=True)
+    zipcode=models.CharField(max_length=200,null=True)
     state=models.CharField(max_length=200,null=True)
     date_added=models.DateTimeField(auto_now_add=True)
 

@@ -24,7 +24,7 @@ def cookieCart(request):
             product = Product.objects.get(id=i)
             total = (product.price * cart[i]['quantity'])
 
-            order['get_cart_items'] = cart[i]['quantity']  
+            order['get_cart_items'] += cart[i]['quantity']  
             order['get_cart_total'] += total
 
             item = {
@@ -79,3 +79,35 @@ def cartData(request):
         items = cookieData['items']
 
     return {'cartItems':cartItems, 'order':order, 'items':items}
+
+
+def guestOrder(request, data):
+    print('USer not logged in...')
+
+    print('COOKIES:', request.COOKIES)
+    name = data['form']['name']
+    email = data['form']['email']
+
+    cookieData = cookieCart(request)
+    items = cookieData['items']
+
+    customer, created = Customer.objects.get_or_create(email=email,)
+    customer.name = name 
+    # as customer can change the name for different sessions,having the same email
+    # so we put it outside the get_or_create() above , we want email to be the id and not the name for unauthenticated user
+    customer.save()
+
+    order = Order.objects.create(
+        customer=customer,
+        complete=False,
+    )
+
+    for item in items:
+        product = Product.objects.get(id=item['product']['id'])
+        orderItem = OrderItem.objects.create(
+            product = product,
+            order = order,
+            quantity = item['quantity'], 
+        )
+    
+    return customer, order

@@ -3,7 +3,7 @@ from . models import *
 from django.http import JsonResponse
 import json
 import datetime
-from . utils import cookieCart,cartData
+from . utils import cookieCart,cartData,guestOrder
 
 # Create your views here.
 def store(request):
@@ -12,7 +12,7 @@ def store(request):
     # order = data['order']    
     # items = data['items']
 
-    products = Product. objects.all()
+    products = Product.objects.all()
     context={'products':products,'cartItems':cartItems}
     return render(request,'store/store.html',context)
 
@@ -21,6 +21,9 @@ def cart(request):
     cartItems = data['cartItems']
     order = data['order']    
     items = data['items']
+    print("cartItems:" , cartItems,'\n\n' )
+    print("order:" , order ,'\n\n')
+    print("items:" , items ,'\n\n')
 
     context={'items':items,'order':order,'cartItems':cartItems}
     return render(request,'store/cart.html',context)
@@ -40,8 +43,7 @@ def updateItem(request):
     action=data['action']
 
     print("ProductID:",productId)
-    print("Action:",action)
-    
+    print("Action:",action)    
 
     customer=request.user.customer
     product=Product.objects.get(id=productId)
@@ -61,36 +63,36 @@ def updateItem(request):
 
     return JsonResponse('Item was added',safe=False)
 
-def processOrder(request):
+def processOrder(request):    
+    transaction_id=datetime.datetime.now().timestamp()
     # the next print line can be commented out ,as it for just for checking if the fetch call worked properly
     # print('Data:',request.body) # line to test post data sent in checkout.html 
-    transaction_id=datetime.datetime.now().timestamp()
     data =json.loads(request.body)
 
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created= Order.objects.get_or_create(customer=customer , complete=False)
-        total=float(data['form']['total'])
-        order.transaction_id = transaction_id
-
-        if total==order.get_cart_total:
-            order.complete=True
-        order.save() #save the order irrespective of fact that total is equal or not
-        # to keep track if th user changed anything from frontend ,OR, if there is some error on our side for future reference
-
-        if order.shipping == True:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
-                address=data['shipping']['address'],
-                city=data['shipping']['city'],
-                state=data['shipping']['state'],
-                zipcode=data['shipping']['zipcode'],
-            )
-
     else:
-        print('User is not logged in...')
+        customer, order = guestOrder(request,data)
 
+    total=float(data['form']['total'])
+    order.transaction_id = transaction_id
+
+    if total==order.get_cart_total:
+        order.complete=True
+    order.save() #save the order irrespective of fact that total is equal or not
+    # to keep track if th user changed anything from frontend ,OR, if there is some error on our side for future reference
+
+    if order.shipping == True:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            state=data['shipping']['state'],
+            zipcode=data['shipping']['zipcode'],
+        )
+            
     return JsonResponse('Payment done-dana-dan done!!',safe=False)
 
  
