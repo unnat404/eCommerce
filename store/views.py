@@ -3,81 +3,33 @@ from . models import *
 from django.http import JsonResponse
 import json
 import datetime
-from . utils import cookieCart
+from . utils import cookieCart,cartData
 
 # Create your views here.
 def store(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer  #from tutorial (yes work)
-        order,created = Order.objects.get_or_create(customer=customer,complete=False)        
-        items=order.orderitem_set.all()
-        cartItems=order.get_cart_items
-        
-    else:
-        # items=[]
-        # order={"get_cart_total":0,"get_cart_items":0, 'shipping' : False}
-        # cartItems=order['get_cart_items']
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
-        # order = cookieData['order']
-        # items = cookieData['items']
+    data = cartData(request)
+    cartItems = data['cartItems']
+    # order = data['order']    
+    # items = data['items']
 
     products = Product. objects.all()
     context={'products':products,'cartItems':cartItems}
     return render(request,'store/store.html',context)
 
 def cart(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer  #from tutorial (yes work)
-        # NOTE: above code line was in the tutorial and has an alternative objects.filter(...).first() 
-                
-        # customer=Customer.objects.filter(user=request.user) #from stackoverflow (not work)
-
-        # for some reason the above code also not work but adding .first() works just fine 
-        # customer=Customer.objects.filter(user=request.user).first() #from stackoverflow (yes work)
-
-        # print("\n\n===================\n")
-        # # to check if an attribute exists or not 
-        # if hasattr(request.user, 'customer'): 
-        #     print("yes exists//// ........\n")
-        # else:
-        #     print("NO such attribute/// ...........\n")        
-        # print("\n\n===================\n")
-        
-        order,created = Order.objects.get_or_create(customer=customer,complete=False)        
-        items=order.orderitem_set.all()
-        #we are able to query child objects by : <parent_in_small_case>.<child_in_small_case>_set.all()
-        cartItems=order.get_cart_items        
-    else:
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
-        order = cookieData['order']
-        items = cookieData['items']
+    data = cartData(request)
+    cartItems = data['cartItems']
+    order = data['order']    
+    items = data['items']
 
     context={'items':items,'order':order,'cartItems':cartItems}
     return render(request,'store/cart.html',context)
  
 def checkout(request):
-    
-    if request.user.is_authenticated:
-        customer = request.user.customer  #from tutorial (yes work)
-        # NOTE: above code line was in the tutorial and has an alternative objects.filter(...).first() 
-
-        # for some reason the above code also not work but adding .first() works just fine 
-        # customer=Customer.objects.filter(user=request.user).first() #from stackoverflow (yes work)        
-        
-        order,created = Order.objects.get_or_create(customer=customer,complete=False)
-        items=order.orderitem_set.all()
-        cartItems=order.get_cart_items
-        #we are able to query child objects by : <parent_in_small_case>.<child_in_small_case>_set.all()
-    else:
-        # items=[]
-        # order={"get_cart_total":0,"get_cart_items":0, 'shipping' : False}
-        # cartItems=order['get_cart_items']
-        cookieData = cookieCart(request)
-        cartItems = cookieData['cartItems']
-        order = cookieData['order']
-        items = cookieData['items']
+    data = cartData(request)
+    cartItems = data['cartItems']
+    order = data['order']    
+    items = data['items']
 
     context={'items':items,'order':order,'cartItems':cartItems}
     return render(request,'store/checkout.html',context)
