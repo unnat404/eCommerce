@@ -44,9 +44,9 @@ function addCookieItem(productId, action){
             (which will give and error if we remove an item from cart for guest user by clicking the down arrow) */
             //----------------------------------------------------------------------------------------------------
 
-            const {productId, ...cartWithoutDeletedPdt} = cart;
-            cart = cartWithoutDeletedPdt;
-            console.log(cartWithoutDeletedPdt )
+            // const {productId, ...cartWithoutDeletedPdt} = cart;
+            // cart = cartWithoutDeletedPdt;
+            // console.log(cartWithoutDeletedPdt )
         }
     }
 
