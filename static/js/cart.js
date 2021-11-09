@@ -30,12 +30,13 @@ function addCookieItem(productId, action){
         }
     }
     if(action == 'remove'){
-        cart[productId] -= 1
+        cart[productId]['quantity'] -= 1
 
         if(cart[productId]['quantity'] <= 0 ){
             console.log('Item should be deleted || Remove Item')
             
             //----------------------------------------------------------------------------------------------------
+            //in project this delete operator is used
             // delete cart[productId]; 
             //delete is a javascript operator            
             /* The JavaScript delete operator removes a property from an object;
@@ -43,15 +44,24 @@ function addCookieItem(productId, action){
             /* delete operator leaves undefine value for the deleted property 
             (which will give and error if we remove an item from cart for guest user by clicking the down arrow) */
             //----------------------------------------------------------------------------------------------------
-
-            // const {productId, ...cartWithoutDeletedPdt} = cart;
-            // cart = cartWithoutDeletedPdt;
-            // console.log(cartWithoutDeletedPdt )
+            
+            //----------------------------------------------------------------------------------------------------
+            //online idea :: stackoverflow
+            const {productId, ...cartWithoutDeletedPdt} = cart;
+            cart = cartWithoutDeletedPdt;
+            console.log(cartWithoutDeletedPdt )
+            //----------------------------------------------------------------------------------------------------
         }
     }
 
     console.log('Cart: ', cart)
     document.cookie =  'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
+    location.reload() 
+    //without this I had to refresh after each change to see the updated data on site
+    //there are better ways to do this (as on large scale this would make the site slow)
+
+
 }
 
 function updateUserOrder(productID,action){
@@ -74,7 +84,8 @@ function updateUserOrder(productID,action){
         console.log("Data:",data)
         location.reload()
         
-    })
+    });
+    //forgot the semi-colon
 
 
-}
+} 

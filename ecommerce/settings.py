@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = os.environ['SECRET_KEY']
 # ===========================================================================================================
 # METHOD-1(implementation-2)(this is the way, i will use, if sucessful) : for security of SECRET_KEY :: AS ENVIRONMENT VARIABLE
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config('SECRET_KEY')
 
 # ===========================================================================================================
 # METHOD-2 : for security of SECRET_KEY :: FROM A FILE WHICH WILL BE GITIGNORED

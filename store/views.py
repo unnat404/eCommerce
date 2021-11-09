@@ -66,7 +66,7 @@ def updateItem(request):
 def processOrder(request):    
     transaction_id=datetime.datetime.now().timestamp()
     # the next print line can be commented out ,as it for just for checking if the fetch call worked properly
-    # print('Data:',request.body) # line to test post data sent in checkout.html 
+    print('Data:',request.body) # line to test post data sent in checkout.html 
     data =json.loads(request.body)
 
     if request.user.is_authenticated:
