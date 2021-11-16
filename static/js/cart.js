@@ -37,7 +37,7 @@ function addCookieItem(productId, action){
             
             //----------------------------------------------------------------------------------------------------
             //in project this delete operator is used
-            // delete cart[productId]; 
+            delete cart[productId]; 
             //delete is a javascript operator            
             /* The JavaScript delete operator removes a property from an object;
              if no more references to the same property are held, it is eventually released automatically. */
@@ -47,9 +47,9 @@ function addCookieItem(productId, action){
             
             //----------------------------------------------------------------------------------------------------
             //online idea :: stackoverflow
-            const {productId, ...cartWithoutDeletedPdt} = cart;
-            cart = cartWithoutDeletedPdt;
-            console.log(cartWithoutDeletedPdt )
+            // const {productId, ...cartWithoutDeletedPdt} = cart;
+            // cart = cartWithoutDeletedPdt;
+            // console.log(cartWithoutDeletedPdt )
             //----------------------------------------------------------------------------------------------------
         }
     }

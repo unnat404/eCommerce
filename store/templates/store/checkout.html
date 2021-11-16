@@ -41,7 +41,8 @@
 			<!-- This information will be hidden until the user fills out their contact info OR is logged in. -->
 			<div class="box-element hidden" id="payment-info">
 				<small>Paypal Options</small>
-				<button id="make-payment">Make Payment</button>
+				<!-- <button id="make-payment">Make Payment</button> -->
+				<div id="paypal-button-container"> </div>
 			</div>
 			
 		</div>
@@ -65,6 +66,56 @@
 			</div>
 		</div>
 	</div>
+	<!-- -------------------------------------------------------------------- -->
+	<!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=Abdq2_iqqYCyGgNbZDITqI_NP4jc_Wel5Ykho3jctXHzB41xct5Vk9NtLxHuftAvet24qlCvdP3EOgBV&currency=USD"></script>
+	<!-- <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&disable-funding=credit"></script> -->
+
+	<script>
+		var total='{{order.get_cart_total}}'
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+			style:{
+				color: 'blue',
+				shape: 'rect',
+
+			},
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: parseFloat(total).toFixed(2)
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) { // orderData is the details in paypal documentation
+					//show success message to buyer!
+					submitFormData() //this clears the cart for logged-in user after sucessful payment
+					//trigger paypal checkout -> user makes payment -> on payment sucess: "submitFormData()"
+					
+					// Successful capture! For demo purposes:
+					// console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    // var transaction = orderData.purchase_units[0].payments.captures[0];
+                    // alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            }
+
+        }).render('#paypal-button-container');
+    </script>
+	<!-- ------------------------------------------- -->
 
 	<script type="text/javascript">
 		// if no product needs shipping(i.e, they are digital) then hide the html asking shipping info 
@@ -97,10 +148,14 @@
 			document.getElementById('form-button').classList.add("hidden");
 			document.getElementById('payment-info').classList.remove("hidden");
 		})
-
+		// --------------------------------------------------------------------------------
+		/*
 		document.getElementById('make-payment').addEventListener('click',function(e){
 			submitFormData()
 		})
+		*/
+		// --------------------------------------------------------------------------------
+		
 		function submitFormData(){
 			console.log('Payment button clicked') //to be updated later for payment initiation
 			
@@ -149,6 +204,9 @@
 				// we put this in the fetch calls "promise" so we clear it only when the data is submitted properly 
 				cart = {}
 				document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
+				// SOMETHING SHOULD be done here to reset data for logged in user to 0 
+				// AFTER CHECKING if the user is authenticated(/logged in) user or not
 
 				window.location.href="{% url 'store' %}" 
 				// to relocate to store page
