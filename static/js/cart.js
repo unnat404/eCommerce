@@ -49,6 +49,10 @@ function addCookieItem(productId, action){
             //online idea :: stackoverflow
             // const {productId, ...cartWithoutDeletedPdt} = cart;
             // cart = cartWithoutDeletedPdt;
+<<<<<<< HEAD
+=======
+            
+>>>>>>> temp
             // console.log(cartWithoutDeletedPdt )
             //----------------------------------------------------------------------------------------------------
         }
@@ -57,7 +61,9 @@ function addCookieItem(productId, action){
     console.log('Cart: ', cart)
     document.cookie =  'cart=' + JSON.stringify(cart) + ";domain=;path=/"
 
-    location.reload() 
+    // location.reload() //earlier it was this 
+    document.location.reload() //this resolved the negative cart error for unauthenticated/guest user
+
     //without this I had to refresh after each change to see the updated data on site
     //there are better ways to do this (as on large scale this would make the site slow)
 
@@ -82,7 +88,8 @@ function updateUserOrder(productID,action){
     })
     .then((data)=>{
         console.log("Data:",data)
-        location.reload()
+        location.reload() //this was there earlier
+        // document.location.reload()
         
     });
     //forgot the semi-colon

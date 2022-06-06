@@ -117,6 +117,60 @@
     </script>
 	<!-- ------------------------------------------- -->
 
+	<!-- -------------------------------------------------------------------- -->
+	<!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=Abdq2_iqqYCyGgNbZDITqI_NP4jc_Wel5Ykho3jctXHzB41xct5Vk9NtLxHuftAvet24qlCvdP3EOgBV&currency=USD"></script>
+	<!-- <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&disable-funding=credit"></script> -->
+
+	<script>
+		var total='{{order.get_cart_total}}' 
+		//note: this can be manipulated in the frontend , but we match/cross-check this with the cart_total in the backend,
+		// (checkout  which cannot be manipulated,
+		// so, manipulating this does no good to users
+
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+			style:{
+				color: 'blue',
+				shape: 'rect',
+			},
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: parseFloat(total).toFixed(2)
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) { // orderData is the details in paypal documentation
+					//show success message to buyer!
+					submitFormData() //this clears the cart for logged-in user after sucessful payment
+					//trigger paypal checkout -> user makes payment -> on payment sucess: "submitFormData()"
+					
+					// Successful capture! For demo purposes:
+					// console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    // var transaction = orderData.purchase_units[0].payments.captures[0];
+                    // alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            }
+
+        }).render('#paypal-button-container');
+    </script>
+	<!-- ------------------------------------------- -->
+
 	<script type="text/javascript">
 		// if no product needs shipping(i.e, they are digital) then hide the html asking shipping info 
 		var shipping = '{{order.shipping}}'
@@ -148,14 +202,23 @@
 			document.getElementById('form-button').classList.add("hidden");
 			document.getElementById('payment-info').classList.remove("hidden");
 		})
+<<<<<<< HEAD
 		// --------------------------------------------------------------------------------
+=======
+// ------------------------------------------------------------------------------------------------------
+>>>>>>> temp
 		/*
 		document.getElementById('make-payment').addEventListener('click',function(e){
 			submitFormData()
 		})
 		*/
+<<<<<<< HEAD
 		// --------------------------------------------------------------------------------
 		
+=======
+// ------------------------------------------------------------------------------------------------------
+
+>>>>>>> temp
 		function submitFormData(){
 			console.log('Payment button clicked') //to be updated later for payment initiation
 			

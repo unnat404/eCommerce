@@ -78,7 +78,9 @@ def processOrder(request):
     total=float(data['form']['total'])
     order.transaction_id = transaction_id
 
-    if total==order.get_cart_total:
+# the below if block ensures no foul play is done, meaning even if total is manipulated in frontend, cart-total cannot be manipulated 
+# hence ensuring order to be complete only if both values match 
+    if total==float(order.get_cart_total):
         order.complete=True
     order.save() #save the order irrespective of fact that total is equal or not
     # to keep track if th user changed anything from frontend ,OR, if there is some error on our side for future reference
