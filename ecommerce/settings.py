@@ -162,7 +162,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # print("\n-----\n base dir is : "+str(BASE_DIR))
-# STATIC_ROOT=os.path.join(BASE_DIR,'static/')
 # print(BASE_DIR/'static')
 
 # added by unnat 
@@ -171,6 +170,7 @@ STATICFILES_DIRS=[
     BASE_DIR / 'store/static/store',
     # os.path.join(BASE_DIR,'static')
 ]
+STATIC_ROOT=os.path.join(BASE_DIR,'assets')
 
 MEDIA_URL='/images/'
 # media root and url can be differnet as we have stored our images ina different position
